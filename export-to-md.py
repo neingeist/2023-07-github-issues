@@ -18,11 +18,16 @@ def create_markdown_file(issue):
 
     with open(filename, 'r') as file:
         existing_content = frontmatter.load(file)
+        old_metadata = existing_content.metadata.copy()
         existing_content.metadata.update(issue_selected)
-        new_content = frontmatter.dumps(existing_content)
+        if existing_content.metadata != old_metadata:
+            new_content = frontmatter.dumps(existing_content)
+        else:
+            new_content = None
 
-    with open(filename, 'w') as file:
-        file.write(new_content)
+    if new_content:
+        with open(filename, 'w') as file:
+            file.write(new_content)
 
 def process_json_files():
     json_files = glob.glob("issues-*.json")
